@@ -1,0 +1,518 @@
+7:13pm 23/12/2022
+Note: 
+	--> powershell cmds.
+	-> comments/descriptions
+
+
+
+Basic Operations in Cmd/PowerShell:
+	copy -> copy file
+	cd -> change dir
+	move -> move file
+	ren -> rename file/folder
+	mkdir -> create folder
+	rmdir -> delete flder
+	del -> delete file
+	type -> just like 'cat' in linux.
+
+	dir > test.txt --> outputs the entire directory to the txt file.
+	New-Item -> create a file. example;
+	New-Item -Path . -Name "testfile1.txt" -ItemType "file" -Value "This is a text string."
+	New-Item -Path "c:\" -Name "logfiles" -ItemType "directory"
+	e.t.c.
+
+
+
+
+========================================================================================================================================================================================================
+--> PowerShell Core: receives updates from microsoft.
+	to download for windows, linux, macos goto the github 'pwsh' page and download.
+	to check version: $psversiontable.
+
+--> in visual studio code, goto view option, command palette, select enable powershell mode. 
+
+
+
+
+
+
+
+
+
+
+Getting Ip address Information.
+Get-NetIpAddress --> get all network card address info.
+Get-NetIpInterface --> get all network interface info (dhcp enabled or not).
+Get-NetIpConfiguration --> get full ip address info + dns.
+Get-NetAdapter --> get summarized list of all network adapters.
+
+Set New Ip Address:
+New-NetIPAddress -InterfaceIndex [index number] -IPAddress [ip address] -DefaultGateway [gateway ip] -PrefixLength [subnet mask] --> set a new ip address and gateway.
+
+Set Dns Address:
+Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "8.8.8.8, 8.8.4.4" --> set a dns ip address.
+
+Remove Ip address, Gateway and DNS:
+Remove-NetIPAddress -IPAddress [ip address]
+Remove-NetRoute -NextHop [default gateway ip address]
+Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "dns address"
+
+
+Intro to Powershell --> 25/01/2023 7:16pm
+
+--> Update powershell to latest: Get-Host
+--> update helper cmdlets: update-help
+--> gets all the cmds in powershell: get-help get-command
+					get-command.
+--> get total number of cmdlets installed in pc: (Get-Command).count
+
+
+====================================================================================================
+==================================How to Search in PowerShell=======================================
+
+--> searching for specific items: Get-Command *service*
+	* before and after 'service' means that there might be words before and 		after d term 'service', so fetch all.
+	or..
+	(Get-Command *servic*).count --> to get total count of cmds available.
+	or further thrim down ur search queries..
+	(Get-Command *-service*).count --> cmds with -service in them.
+--> searching using module names like; Microsoft Powershell Mgmt or Azure Modules; Get-Command -Module [module name] or if you want to get a list of cmdlets with that particulare module name.
+ 	Get-Command -Module Microsoft.PowerShell.Management
+
+--> searching using parameterName or if you want to get list of all cmdlets that has a particular parameterName example; Get-Command [-ParameterName syntax] [the parameter name]
+	Get-Command -ParameterName ComputerName
+
+--> you can further streamline your search query;
+	Get-Command *service* -ParameterName ComputerName
+	Get-Command -ParameterName NextHop
+
+===================================================================================================
+==============================How to use the Get-Help cmdlet=======================================
+parameters for the Get-Help cmmdlet;
+	-ShowWindow	--> display help in a window format, allowing for selecting views.
+	-Examples	--> gives some examples about the cmdlet.
+	-Detailed	--> detailed usecase.
+	-Full	--> to get full usecase/exapmles.
+	-Online --> to get online help.
+
+--> To view an example or usecase of a cmdlet;  Get-Help [-Examples syntax] [any cmdlet u want to know how to use] example;
+	 Get-Help -Examples Get-ComputerInfo
+		-> outputs how to use the Get-ComputerInfo cmd with its parameters and arguments, for eample; -property is a parameter of the cmd.
+			Get-ComputerInfo -Property "*version"
+	Get-Service -DisplayName "* server*" -> searches for all services with -DisplayName parameter with space before server keyword and displays them.
+
+====================================================================================================
+===============================Display powershell results in full===================================
+
+--> Get-service | ft -AutoSize -> displays results in full without cutouts in powershell windows.
+
+
+
+
+===========Powershell Integrated Scripting Environment (ISC)=======================================
+
+
+Types of Commands in PowerShell:
+1) Functions: is a script which has been written in powershell language using the cmdlets provided in powershell
+	function myService{
+	    Get-Service
+	}
+	myService
+	
+		you can use the Import-Module to import the function to your current terminal, the the myServce will become available just like any other cmdlets.
+
+
+2) Cmdlets: is a program which has been written and compiled using .NET libraries, and integrated into powershell module eg; microsoft powershell environment. Cant be modified.
+
+
+
+==================================Types of Parameters in PowerShell================================
+1) Optional: parameters and its values are surrounded by square brackets example;
+		Get-Service [-ComputerName <String[]>]
+2) Mandatory: parameters not surrounded by square brackets example;
+		Get-Service -DisplayName <String[]>
+3) Common: parameters which are common accross all cmdlets example;
+		Get-EventLog [<CommonParameters]
+4) Positional: commonly used parameters are often positional, meaning that you can provide a value without typing the parameter's nsme, provided you put that value in the correct position example;
+		Get-EventLog [-LogName] <String
+		Get-EventLog -LogName System or Get-EventLog System
+
+5) Switch Parameters: A cmdlet in PowerShell may have switch parameters.
+	-> Some parameters are reffered to as switches, like in cmd line switches ex;
+		ipconfig /all (here /all is a switch).
+	-> They don't accept any value as input
+		eg; Get-Service [-DependentServices]
+
+
+==================Parameter Values============================================
+A parameter can accept different types as values.
+-> when you open help <cmdlet>  for a cmdlet you will get to know the type of value each parameter can accept, example; String, Int32 or Int64, DataTime, String Array.
+
+
+======================Commands in PowerShell===================================
+--> Commands in powershell are called cmdlets.
+--> Cmdlets are pre-defined .NET compiled programs.
+--> Cmdlets in turn take parameters as input
+--> Every cmdlet has its own pre-defined functionality, exapmle;
+	Get-Service, Get-Process, Set-NetIpAddress etc.
+
+
+=============Getting List of a CmdLet Parameters===================================
+--> (Get-Command Get-NetIPAddress).Parameters.Values | select name -> To get the entire list of a cmdlet parameters.
+	this outputs the name column of Get-NetIpAddress parameters.
+
+
+========================Alias===================================================
+When using some cmdlets frequently you can call them by their shortname or alias instead of using their fullnames, example; ps instead of Get-Process e.t.c.
+--> to get the alias for a particular cmdlet;
+	Get-Alias -Definition Get-Process
+--> to get full name using the alias name;
+	Get-Alias -Name ps
+
+
+===============================PSDrives=============================================
+When you run a cmdlet you ultimately manipulate some data in the form of configuration on your computer, right?
+All 'Get' cmdlets will retrieve data and all 'Set' cmdlets will change/modify configutation (data).
+Powershell comes with different drives by default like our regular data drives C:\, D:\ etc. and additionally you can see Reistry, Certificate Store and Environmental Variables etc. also as drives.
+
+--> Get-PSDrive is the cmdlet to explore them.
+
+-> Some of these PSDrives will not be visible in Explorer.
+-> You can access registry as a drive (file system).
+-> Drive letters for these drives can be more than one character for ex: HKCU (HKEY_CURRENT_USER), HKLM (HKEY_LOCAL_MACHINE)
+
+
+===================================Errors=================================================
+--> An error occours when something isn't right with the cmdlet or script execution.
+--> Errors looks scary, but they are not really.
+--> errors tells us where exactly the script went wrong with line and character numbers.
+--> errors are different types in powershell, technically called as Exceptions.
+
+
+
+==============================PowerShell Variables Intro=====================================
+--> A variable name starts with a $ (dollar sign)
+--> Should not include/use name from pre-defined system variables like;
+	$true, $false, $null, $error etc.
+--> To assign a value to variable = will be used
+	example; $hostname = "Natty"
+			$hostname --> to print to console.
+
+
+==========================TYPES OF variable IN POWERSHELL====================================
+1) System Variables: Pre-defined variables in powershell.
+	we can use the; Get-Variable or ls vairable:* --> to view these varaibles.
+
+2) User-defined Varaibles: defined by a user and can be overwritten.
+	example; $myName = "Natty", $age = 30
+3) Environmental Variables: Stores info about the OS environment.
+	example; cd env:\ then;
+			ls -> to view the environment
+		or view them individually;
+			ls temp, ls home, ls os, ls windir, e.t.c.
+
+
+--> Get-Variable -Exclude profile,home etc -> to exclude those items from the variable list.
+--> you can call any variable listed in 'Get-Variable' -> $error, $home, $profile etc.
+
+--> $myName | Get-Member or $age.GetType() -> to get the data type.
+	you can access the dat types methods using the tab key.
+
+
+===================================================================================================
+========================================Variable Scope=============================================
+1) Local: local to the script, mostly user-defined variables.
+	example: use the Invoke-Command to declare a local variable.
+		Invoke-Command -ScriptBlock {$str = 'This is a local String'; "String value: $str"}
+2) Global: available to all cmdlets, scripts and functions
+	you can make a local variable in a script file globally accessible outside that script by; $global:myName = "DKing"
+	when the script file is executed, the 'myName' variable becomes globally accessible in that powershell terminal/session.
+
+===============================Changing variable scope using Scope Modifier=========================
+$global:myName = "DKing"
+Invoke-Command -ScriptBlock {$global:str = 'This is a local String'; "String value: $str"}
+
+====================================================================================================
+===============================How to get input from users in PowerShell============================
+--> By using 'Read-Host' cmdlet example; write script in ise.
+	-> as strings:
+		$f_name = Read-Host 'enter first name'
+		$l_name = Read-Host 'enter last name'
+		$sp = ' '
+		$result = $f_name + $sp + $l_name
+		$result
+	-> as integers:
+		[int] $f_num = Read-Host 'enter first number'
+		[int] $l_num = Read-Host 'enter last number'
+		$result = $f_num + $l_num
+		$result
+
+===========================================Variables in Expressions=================================
+--> if variable is enclosed in double quotation (""), then value of variable is returned.
+--> if variable is enclosed in single quotation (''), then name of variable is returned.
+Example:
+	$l_num = 3
+	Write-Host 'value of var is $l_num' -> outputs value of var is $l_num
+	Write-Host "value of var is $l_num" -> outputs value of var is 3
+
+====================================================================================================
+--> Types of Variables:
+1) User-defined Variables
+2) Automatic Variables: eg;
+	$$ -> returns last run cmd.
+	$? -> returns result of last cmd execution either True or False.
+	$_ -> current object in our pieline. eg; like tenary operator format in javascript
+		1..10 | foreach{$_}
+	$PID -> process id
+	$PsCulture -> language
+	$pwd -> present working director
+3) Preference Variables:
+	$MaximumHistoryCount -> changes the value of previous ran cmdlets for current powershell session. $MaximumHistoryCount = 10
+	$ErrorView.
+	
+
+
+
+============================================Arrays=============================================
+--> Declaring an array;
+	$array1 = 10,20,30,40,50
+--> Values are accessed using indexing; ie, $array1[0] -> outputs 10
+--> $array1 += 60 or $array1 += 'net' -> adds an item to the array.
+--> Clear-Variable -Name myName -> clears the myName variable from d variable list.
+--> New-Variable -Name val1 -Value "This is value 1" -> creates a new variable (lengthy method)
+
+
+
+====================================================================================================
+=====================================Commands Piping===============================================
+--> A way of connecting commands in powershell is called Piping.
+--> We use | symbol to pipe two or more cmds,
+	eg; dir | more
+--> Piping provides a way for one cmd to pipe its output to another cmd as input,
+	eg; Get-Service | export-csv c:\temp\services.csv
+	    Get-service -Name "Windows update" | stop-service
+
+=========================How Piping Works?====================================================
+--> Powershell accepts inputs through "parameters".
+--> Powershell uses a technique called "pipeline parameter binding"
+--> Lets consider this example;
+	-> Get-content c:\temp\services.txt | get-service
+	-> get-content reads the content of textfile, which has service named listed.
+	-> We are piping that information as input to get-service cmdlet.
+	-> Now one of the parameter from get-service cmdlet should pickup this information as input and process it.
+
+
+====Methods used by Powershell to understand Output produced by one cmd to the 2nd cmd====
+1) Input 'ByValue' method:
+	both data type of each output must be same. pipe the output to Get-Member cmdlet to get data type.
+		example: Get-Content C:\testing\test.txt | Get-Member
+			or
+			(Get-Content C:\testing\test.txt | Get-Member).gettype()
+
+2) Input 'ByPropertyName' method:
+	Get-Process explorer | select -Property * --> this gets the process 	properties.
+	Get-Service WSearch | Get-Member -MemberType Property,AliasProperty --> this exclude methods 		and events from  the MemberType column.
+
+	Generic Piping example:
+		Get-Process | Out-File .\folder\test.txt -->> outputs all processes into				the text.txt file.
+
+	Get-Service | Export-Csv .\Test_playGround\222.csv -->> outputs all services as a csv file.
+
+	Get-Service | ConvertTo-Html > .\222.html --> converts to html, then 	output into the 		.html file.
+
+
+
+=====================================================================================================
+=====================Creating a Script to silently install apps in windows=========================
+--> if multiple apps to install, you can put them in a share folder or any folder then create a .csv file with their fullname and silent install value (search how to install that file silently with powershell). example: in test folder, we have a pkgs.csv file, inside the csv file (ChromeStandaloneSetup64.exe,/silent /install).
+
+--> you can then import to  powershell with (specify a delimiter -> "," and header for the csv file 		-> "install","value"):
+	Import-Csv \\path_to_file\\ -Delimiter "," -Header "install","value" --> outputs the apps in 		a nicely formatted view in powershell.
+
+--> 
+to be continued...
+
+
+
+====================================================================================================
+===========================================PowerShell Objects=======================================
+--> view all parameter of a cmdlet.
+
+--> (Get-Command Get-Service).Parameters.Values | select name -> outputs all parameters for the Get-Service cmdlet.
+	or
+	Help Get-NetIPAddress -Parameter * | select name
+	or,
+	you can view by -> Get-Service and press 'tab key' to iterate through them.
+	or,
+	you can view in a formatted list view by -> (Get-Command Get-Service).Parameters.Values | select name
+
+--> Get-Service  WSearch | select * -> outputs all the parameters for 'wsearch'
+	or,
+	Get-Service  WSearch | select -Property *
+	or,
+	Get-Service | Select-Object DisplayName
+
+--> Get-Service | select -Property * -> outputs full properties of an object.
+
+
+============================================Real life usecase=======================================
+====================================================================================================
+How to find suffs you dont know exact name of in powershell......................
+use the powershell ise environment:
+example;
+
+--> accessing properties of an object using variable declaration:
+$service = Get-Service WSearch
+$service.Name -> outputs Windows Search
+or,
+Get-Service WSearch | Select-Object -Property Name
+
+
+-> You can stop a service many waye: example;
+Stop-Service -Name $service
+
+-> you can also get object by using the 'Where-Object' cmdlet
+example;
+-> 'Where-Object' based on "matching" keywords.
+Get-Service | Where-Object -Property Name -Match 'anydesk' -> outputs the 'anydest' service
+or,
+Get-Service | Where-Object {$_.DisplayName -match 'backup'}
+Get-Process | Where-Object {$_.Name -match 'search'}
+
+-> 'Where-Object' based on "exact" keywords.
+Get-Service | Where-Object -Property Name -EQ 'wsearch' -> use this if you know the actual name.
+or,
+Get-Process | Where-Object {$_.Name -eq 'searchapp'}
+
+
+
+=======================================User Defined Objects=========================================
+You can also define/create your own user defined objects............................................
+example:
+$obj = New-Object -TypeName psobject -> to create
+$obj | Add-Member -Type NoteProperty -Name Name -Value Nathan -> to define its objects
+$obj | Add-Member -Type NoteProperty -Name Age -Value 24 -> another object.
+$obj.name -> to access the name method.
+
+
+
+===========================================PowerShell Operators=====================================
+====================================================================================================
+--> The term operator refers to one or more characters in a command or expression that powershell interprets in a specific way.
+--> 	1) Arithmetic (+, -, *, /, modulus %)
+	2) Logical: -and, -or, -not or !
+		$number
+		($number -eq 100) -or ($number -ne 20) -> outputs True. 
+		Equality -> -eq, -ne, -lt, -ge, -le. example: 100 -eq 19 -> outputs false.
+		Match -> -like, -notlike, -match, -notmatch. example: 'anonymous' -match 'anon' -> outputs true.
+	3) Comparison: -contains, -notcontains example:
+		$a = 'one','two','three','four'
+		$a -contains 'one' -> outputs True.
+			-replace example:
+				"My name is Nathan" -replace 'Nathan',"Hannah Alabi"
+	4) SPlit and Join: -split, -join example;
+		-split -> convert string to array. $name = 'My name is not Natty'
+			$name.split(' ') -> returns an array.
+	5) Type: -is, -isnot
+	6) Redirection: >
+		Get-Children > .\path 
+	7) Assignment: =,+=,-=,*=,/=,++,--
+
+--> example: '+'
+	powershell uses this for addition of integers or to join strings.
+	$a = 1; $b = 2; $c = $a + $b -> outputs 3
+	"Nathan" + "Alabi" -> Nathan Alabi
+
+
+
+
+
+
+
+
+===========================================Loops in PowerShell=====================================
+====================================================================================================
+foreach, for, while,do-while, do-until loops.
+
+--> foreach loop:
+$number = 1,2,3,4,5
+foreach($num in $number) {
+    $n = $num + 10
+    Write-Host $n
+}
+
+
+
+===============================================================================================================================Invoke Command in PowerShell============================================
+--> Is used to execute script on a local or remote computer. example;
+	Invoke-Command -ScriptBlock {$str = 'This is a local String'; "String value: $str"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
