@@ -2,7 +2,9 @@
 Note: 
 	--> powershell cmds.
 	-> comments/descriptions
-
+--> ping or Test-Connection
+	example: ping bbc.com
+		 Test-connection bbc.com
 
 
 Basic Operations in Cmd/PowerShell:
@@ -70,8 +72,7 @@ Intro to Powershell --> 25/01/2023 7:16pm
 ====================================================================================================
 ==================================How to Search in PowerShell=======================================
 
---> searching for specific items: Get-Command *service*
-	* before and after 'service' means that there might be words before and 		after d term 'service', so fetch all.
+--> searching for specific items: Get-Command *service* -> * means before and after 'service' means that there might be words before and after d term 'service', so fetch all.
 	or..
 	(Get-Command *servic*).count --> to get total count of cmds available.
 	or further thrim down ur search queries..
@@ -158,8 +159,7 @@ A parameter can accept different types as values.
 
 
 =============Getting List of a CmdLet Parameters===================================
---> (Get-Command Get-NetIPAddress).Parameters.Values | select name -> To get the entire list of a cmdlet parameters.
-	this outputs the name column of Get-NetIpAddress parameters.
+--> (Get-Command Get-NetIPAddress).Parameters.Values | select name -> To get the entire list of a cmdlet parameters. This outputs the name column of Get-NetIpAddress parameters.
 
 
 ========================Alias===================================================
@@ -189,8 +189,8 @@ Powershell comes with different drives by default like our regular data drives C
 --> errors are different types in powershell, technically called as Exceptions.
 
 
-
-==============================PowerShell Variables Intro=====================================
+====================================================================================================
+=====================================PowerShell Variables Intro=====================================
 --> A variable name starts with a $ (dollar sign)
 --> Should not include/use name from pre-defined system variables like;
 	$true, $false, $null, $error etc.
@@ -232,6 +232,7 @@ Powershell comes with different drives by default like our regular data drives C
 $global:myName = "DKing"
 Invoke-Command -ScriptBlock {$global:str = 'This is a local String'; "String value: $str"}
 
+
 ====================================================================================================
 ===============================How to get input from users in PowerShell============================
 --> By using 'Read-Host' cmdlet example; write script in ise.
@@ -271,15 +272,33 @@ Example:
 	$ErrorView.
 	
 
+===================================Properties of a Variable in PowerShell===========================
+--> $error | Get-Member | ft Name,MemberType -> getting the properties of the error variable.
+--> $error[0].InvocationInfo -> you can access any of the properties for each error index.
+
+
+====================directory/files manipulation - getting informations about files=================
+exapmles: cd c:\testing -> has 1 file named hosts.txt.
+	our script to manipulate:
+	$ls = Get-ChildItem -> create a variable that list the items in the folder.
+	$ls | Get-Member | ft Name,MemberType -> gets all properties for the variable $ls, in order to access these properties, you have to select items in the folder by indexing i.e; $ls[0].CreationTime e.t.c.
+	
 
 
 ============================================Arrays=============================================
 --> Declaring an array;
-	$array1 = 10,20,30,40,50
+	$array1 = 10,20,30,40,50 -> declaring an array
+	$fruits = @("Apple","Orange","Kiwi") -> declaring an array
 --> Values are accessed using indexing; ie, $array1[0] -> outputs 10
---> $array1 += 60 or $array1 += 'net' -> adds an item to the array.
+--> $array1 += 60 or $array1 += 'net' -> adds an item to the end of the array.
+--> $array.setvalue(5, 1) -> change the value at index 1 to 5.
+--> $array1[-1] = 500 -> changes the last value from 50 to 500.
 --> Clear-Variable -Name myName -> clears the myName variable from d variable list.
 --> New-Variable -Name val1 -Value "This is value 1" -> creates a new variable (lengthy method)
+--> [System.Collecction.ArrayList]$newArray = 1..5 -> defining a standard non-fixed array.
+	$newArray.Remove(4) -> removes 4 from the newArray.
+	$newArray.RemoveAt(1) -> removes value at index 1.
+	$newArray.Add(10) -> adds 10 to the newArray.
 
 
 
@@ -400,7 +419,7 @@ $obj.name -> to access the name method.
 ====================================================================================================
 --> The term operator refers to one or more characters in a command or expression that powershell interprets in a specific way.
 --> 	1) Arithmetic (+, -, *, /, modulus %)
-	2) Logical: -and, -or, -not or !
+	2) Logical: -and, -or, -not or !, xor - (only one should be true)
 		$number
 		($number -eq 100) -or ($number -ne 20) -> outputs True. 
 		Equality -> -eq, -ne, -lt, -ge, -le. example: 100 -eq 19 -> outputs false.
@@ -408,26 +427,33 @@ $obj.name -> to access the name method.
 	3) Comparison: -contains, -notcontains example:
 		$a = 'one','two','three','four'
 		$a -contains 'one' -> outputs True.
-			-replace example:
-				"My name is Nathan" -replace 'Nathan',"Hannah Alabi"
+-replace example:
+	"My name is Nathan" -replace 'Nathan',"Hannah Alabi"
+	"Test value" -replace "Te","Be"
+	1..5 | foreach {New-item -Name $("file" + $_ + ".txt")} -> creates 5 .txt files (file1.txt-file5.txt).
+	Get-children *.txt | foreach {Rename-Item $_.Name -NewName $($_.name -replace '.txt','.log')} -> rename all files to (file1.log - file5.log).
+
 	4) SPlit and Join: -split, -join example;
 		-split -> convert string to array. $name = 'My name is not Natty'
 			$name.split(' ') -> returns an array.
-	5) Type: -is, -isnot
-	6) Redirection: >
+			$name -join " " -> returns a string
+	5) Type Operators: -is, -isnot example;
+		$a = 2
+		$a -is [int] -> outputs True
+	6) Redirection: > -> write an output to a file
+			>> -> append an output to a file
 		Get-Children > .\path 
-	7) Assignment: =,+=,-=,*=,/=,++,--
+	7) Assignment / unary: =,+=,-=,*=,/=,++,--,%=
+		$num = 100
+		$num++ -> outputs 101
 
 --> example: '+'
 	powershell uses this for addition of integers or to join strings.
 	$a = 1; $b = 2; $c = $a + $b -> outputs 3
 	"Nathan" + "Alabi" -> Nathan Alabi
 
-
-
-
-
-
+	8) Tenary Operators:
+		2 -eq 3 ? "True" : "False"
 
 
 ===========================================Loops in PowerShell=====================================
@@ -441,6 +467,22 @@ foreach($num in $number) {
     Write-Host $n
 }
 
+--> for loop:
+$numbers = 10,20,30,40,50
+for ($i=0; $i -le $numbers.Count; $i++){
+    $numbers[$i] * 2
+}
+
+$count = 0
+for ($i=0; $i -lt 8; $i++){
+    "$count Apple"; $count++
+}
+
+$count = 0
+for (($i=0),($m=10); $i -lt 10 -and $m -ge 10; $i++, $m++){
+    "$i is $m"
+}
+
 
 
 ===============================================================================================================================Invoke Command in PowerShell============================================
@@ -449,70 +491,43 @@ foreach($num in $number) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+====================================================================================================================================While Loops========================================================
+-->
+$list = 15..18
+$i = 0
+while ($i -le $list.count){
+    $list[$i]; $i++
+} 
+
+============================================================================================================================================Error Handling in PS========================================
+
+--> $error -> the $error variable holds all errors encountered in powershell for that current session. Which is an array.
+--> $error[0].gettype() -> shows the error type for the 1st error (using indexing).
+--> $error.exception -> shows the description of each all errors in the array.
+--> $error[0].Exception.GetType().name or .fullname -> gives the name of the 1st error in d array.
+example:
+	Test-Connection AZTECMFB -> throws an error
+	$error[0].Exception.GetType().fullname -> fetches the error fullname ie; System.Net.NetworkInformation.PingException
+	or
+	$error[0].Exception.GetType().name -> fetches the error name ie; PingException.
+--> $error.Clear() -> clears all errors for current powershell session.
+
+
+===================================reallife usecase of try and catch================================
+--> exapmle 1;
+Try {
+	ls -Name gg -ErrorAction Stop
+}
+catch{
+	Write-Host "`nError Message:" $_.exception.message
+} -> outputs: Error Message: Cannot find path 'C:\testing\gg' because it does not exist.
+
+--> example 2;
+try {
+    Test-Connection AZTECMFB -ErrorAction Stop
+} catch {
+    Write-Host "`nError Message:" $_.exception.message
+}
 
 
 
