@@ -66,7 +66,9 @@ Intro to Powershell --> 25/01/2023 7:16pm
 --> update helper cmdlets: update-help
 --> gets all the cmds in powershell: get-help get-command
 					get-command.
---> get total number of cmdlets installed in pc: (Get-Command).count
+--> get total number of cmdlets installed in pc: 
+	(Get-Command).count
+	Get-Command -parameterName "*computername*" | measure-object
 
 
 ====================================================================================================
@@ -531,3 +533,34 @@ try {
 
 
 
+=============================================================================================================================================PowerShell Remoting========================================
+--> Terminologies & Components of PS Remoting:
+	-> Web Services for mgmt (WS-MAN) -> HTTP-5985 and 5986
+	-> Firewall & Security
+	-> Windows Remote Mgmt (WinRM)
+	-> Authentication
+	-> Endpoint
+	-> Listener
+
+
+=================================Preparing Client PC's for PowerShell Remoting======================
+====================================================================================================
+--> Hostname -> get name of client pc workstation.
+1)--> Enable-PSRemoting -> enable powershell remoting on PC's
+
+2)--> Get-PSSessionConfiguration | select name -> checking enabled endpoints, or verifying ps remoting is enabled
+
+-->  Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name "LocalAccountTokenFilterPolicy" -> check if the registry exists.
+
+3)--> new-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name "LocalAccountTokenFilterPolicy" -value '00000001' -propertytype Dword -Force -> adding the key into the registry (do this on client PC).
+
+4)--> set-Item WSMan:\localhost\Client\TrustedHosts -Value "ip_add_of_client_pc" -Force -Concatenate -> add the client PC to the domain controller trusted host lists.
+
+5)--> Get-Item WSMan:\localhost\Client\TrustedHosts -> checking if new client has been added to DC trusted host lists.
+
+====================================================================================================
+=========================================One-One PS Remoting========================================
+--> helpful when working with single remote machine.
+--> commands;
+	Enter-PsSession eg; Enter-PSSession -ComputerName "ip_add_of_client"
+	Exit-PsSession
