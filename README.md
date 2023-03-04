@@ -34,9 +34,8 @@ $psversiontable
 ```
 > in visual studio code, goto view option, command palette, select enable powershell mode. 
 #
-#
 ### Getting Ip address Information.
-#
+
 ```ps
 Get-NetIpAddress
 ```
@@ -67,6 +66,11 @@ Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "8.8.
 
 ```ps
 Remove-NetIPAddress -IPAddress [ip address]
+```
+```ps
 Remove-NetRoute -NextHop [default gateway ip address]
+```
+```ps
 Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "dns address"
 ```
+
