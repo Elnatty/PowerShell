@@ -119,11 +119,11 @@ Get-Command -ParameterName NextHop
 #
 ### How to use the Get-Help cmdlet
 __parameters for the Get-Help cmmdlet;__
-* -ShowWindow	//display help in a window format, allowing for selecting views.
-* -Examples	// gives some examples about the cmdlet.
-* -Detailed	// detailed usecase.
-* -Full	// to get full usecase/exapmles.
-*	-Online // to get online help.
+* -ShowWindow	--display help in a window format, allowing for selecting views.
+* -Examples	--gives some examples about the cmdlet.
+* -Detailed	--detailed usecase.
+* -Full	--to get full usecase/exapmles.
+*	-Online --to get online help.
 
 To view an example or usecase of a cmdlet;  
 ```ps
@@ -141,3 +141,54 @@ search for all services with -DisplayName parameter with space before server key
 ```ps
 Get-Service -DisplayName "* server*"
 ```
+#
+### Display powershell results in full
+displays results in full without cutouts in powershell windows:
+```ps
+Get-service | ft -AutoSize
+```
+
+## Powershell Integrated Scripting Environment (ISC)
+
+### Types of Commands in PowerShell:
+1. __Functions:__ is a script which has been written in powershell language using the cmdlets provided in powershell
+```ps
+function myService{
+    Get-Service
+}
+myService
+```
+you can use the `Import-Module` to import the function to your current terminal, then the `myService` function will become available just like any other cmdlets.
+
+
+2. __Cmdlets:__ is a program which has been written and compiled using .NET libraries, and integrated into powershell module eg; microsoft powershell environment. Cant be modified.
+
+### Types of Parameters in PowerShell
+
+1. __Optional:__ parameters and its values are surrounded by square brackets example;
+```ps
+Get-Service [-ComputerName <String[]>]
+```
+2. __Mandatory:__ parameters not surrounded by square brackets example;
+```ps
+Get-Service -DisplayName <String[]>
+```
+3. __Common:__ parameters which are common across all cmdlets example;
+```ps
+Get-EventLog [<CommonParameters]
+```
+4. __Positional:__ commonly used parameters are often positional, meaning that you can provide a value without typing the parameter's name, provided you put that value in the correct position example;
+```ps
+Get-EventLog [-LogName] <String
+Get-EventLog -LogName System or Get-EventLog System
+```
+5. __Switch Parameters:__ A cmdlet in PowerShell may have switch parameters.
+    * Some parameters are referred to as switches, like in cmd line switches ex;
+    ```ps
+		ipconfig /all (here /all is a switch).
+    ```
+	* They don't accept any value as input
+		eg; 
+    ```ps
+    Get-Service [-DependentServices]
+    ```
