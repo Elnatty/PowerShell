@@ -167,11 +167,11 @@ you can use the `Import-Module` to import the function to your current terminal,
 
 1. __Optional:__ parameters and its values are surrounded by square brackets example;
 ```ps
-Get-Service [-ComputerName <String[]>]
+Get-Service [-ComputerName <Str[]>]
 ```
 2. __Mandatory:__ parameters not surrounded by square brackets example;
 ```ps
-Get-Service -DisplayName <String[]>
+Get-Service -DisplayName <Str[]>
 ```
 3. __Common:__ parameters which are common across all cmdlets example;
 ```ps
@@ -179,7 +179,7 @@ Get-EventLog [<CommonParameters]
 ```
 4. __Positional:__ commonly used parameters are often positional, meaning that you can provide a value without typing the parameter's name, provided you put that value in the correct position example;
 ```ps
-Get-EventLog [-LogName] <String
+Get-EventLog [-LogName] <Str
 Get-EventLog -LogName System or Get-EventLog System
 ```
 5. __Switch Parameters:__ A cmdlet in PowerShell may have switch parameters.
