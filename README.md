@@ -26,11 +26,10 @@ New-Item -Path "c:\" -Name "log_files" -ItemType "directory"
 ```
 #
 
--> __PowerShell Core:__ receives updates from microsoft.
+__PowerShell Core:__ receives updates from microsoft.
 	to download for windows, linux, macos goto the github 'pwsh' page and download.
 	to check version: 
 ```ps 
 $psversiontable.
 ```
-
--> in visual studio code, goto view option, command palette, select enable powershell mode. 
+> in visual studio code, goto view option, command palette, select enable powershell mode. 
