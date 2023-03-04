@@ -33,3 +33,23 @@ __PowerShell Core:__ receives updates from microsoft.
 $psversiontable.
 ```
 > in visual studio code, goto view option, command palette, select enable powershell mode. 
+#
+#
+### Getting Ip address Information.
+```ps
+Get-NetIpAddress --> get all network card address info.
+Get-NetIpInterface --> get all network interface info (dhcp enabled or not).
+Get-NetIpConfiguration --> get full ip address info + dns.
+Get-NetAdapter --> get summarized list of all network adapters.
+```
+
+Set New Ip Address:
+New-NetIPAddress -InterfaceIndex [index number] -IPAddress [ip address] -DefaultGateway [gateway ip] -PrefixLength [subnet mask] --> set a new ip address and gateway.
+
+Set Dns Address:
+Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "8.8.8.8, 8.8.4.4" --> set a dns ip address.
+
+Remove Ip address, Gateway and DNS:
+Remove-NetIPAddress -IPAddress [ip address]
+Remove-NetRoute -NextHop [default gateway ip address]
+Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "dns address"
