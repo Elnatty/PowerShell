@@ -305,98 +305,109 @@ By using 'Read-Host' cmdlet example; write script in ise:
 * if variable is enclosed in double quotation (""), then value of variable is returned.
 * if variable is enclosed in single quotation (''), then name of variable is returned.
 Example:
+  * ```$l_num = 3```
+  * ```Write-Host 'value of var is $l_num'```  outputs value of var is ```$l_num```
+  * ```Write-Host "value of var is $l_num"```  outputs value of var is 3
+
+
+### Types of Variables:
+1. User-defined Variables
+2. Automatic Variables: eg; ```$$```  returns last run cmd.
+```$?```  returns result of last cmd execution either True or False.
+```$_``` current object in our pieline. eg; like tenary operator format in javascript
+	```1..10 | foreach{$_}```
+	```$PID``` process id ```$PsCulture```  language
+	```$pwd``` present working director
+3. Preference Variables:
+	```$MaximumHistoryCount```  changes the value of previous ran cmdlets for current powershell session. ```$MaximumHistoryCount = 10```	
+	
+
+### Properties of a Variable in PowerShell
+getting the properties of the error variable
 ```ps
-$l_num = 3
-Write-Host 'value of var is $l_num' -> outputs value of var is $l_num
-Write-Host "value of var is $l_num" -> outputs value of var is 3
+$error | Get-Member | ft Name, MemberType
 ```
-====================================================================================================
---> Types of Variables:
-1) User-defined Variables
-2) Automatic Variables: eg;
-	$$ -> returns last run cmd.
-	$? -> returns result of last cmd execution either True or False.
-	$_ -> current object in our pieline. eg; like tenary operator format in javascript
-		1..10 | foreach{$_}
-	$PID -> process id
-	$PsCulture -> language
-	$pwd -> present working director
-3) Preference Variables:
-	$MaximumHistoryCount -> changes the value of previous ran cmdlets for current powershell session. $MaximumHistoryCount = 10
-	$ErrorView.
+you can access any of the properties for each error index.
+```ps
+$error[0].InvocationInfo
+```
+#
+### Directory/files manipulation - getting informations about files
+exapmles: ```cd c:\testing```  has 1 file named `hosts.txt`.
+our script to manipulate:
+> create a variable that list the items in the folder
+```ps
+$ls = Get-ChildItem
+```
+gets all properties for the variable $ls, in order to access these properties, you have to select items in the folder by indexing i.e; $ls[0].CreationTime
+```ps
+$ls | Get-Member | ft Name, MemberType
+```
 	
-
-===================================Properties of a Variable in PowerShell===========================
---> $error | Get-Member | ft Name,MemberType -> getting the properties of the error variable.
---> $error[0].InvocationInfo -> you can access any of the properties for each error index.
-
-
-====================directory/files manipulation - getting informations about files=================
-exapmles: cd c:\testing -> has 1 file named hosts.txt.
-	our script to manipulate:
-	$ls = Get-ChildItem -> create a variable that list the items in the folder.
-	$ls | Get-Member | ft Name,MemberType -> gets all properties for the variable $ls, in order to access these properties, you have to select items in the folder by indexing i.e; $ls[0].CreationTime e.t.c.
-	
-
-
-============================================Arrays=============================================
---> Declaring an array;
-	$array1 = 10,20,30,40,50 -> declaring an array
-	$fruits = @("Apple","Orange","Kiwi") -> declaring an array
---> Values are accessed using indexing; ie, $array1[0] -> outputs 10
---> $array1 += 60 or $array1 += 'net' -> adds an item to the end of the array.
---> $array.setvalue(5, 1) -> change the value at index 1 to 5.
---> $array1[-1] = 500 -> changes the last value from 50 to 500.
---> Clear-Variable -Name myName -> clears the myName variable from d variable list.
---> New-Variable -Name val1 -Value "This is value 1" -> creates a new variable (lengthy method)
---> [System.Collecction.ArrayList]$newArray = 1..5 -> defining a standard non-fixed array.
-	$newArray.Remove(4) -> removes 4 from the newArray.
-	$newArray.RemoveAt(1) -> removes value at index 1.
-	$newArray.Add(10) -> adds 10 to the newArray.
+#
+### Arrays
+__Declaring an array;__
+* ```$array1 = 10,20,30,40,50```
+*  ```fruits = @("Apple","Orange","Kiwi")```
+> Values are accessed using indexing; ie,
+* ```$array1[0]```  outputs 10
+* ```$array1 += 60``` or ```$array1 += 'net'```  adds an item to the end of the array.
+* ```$array.setvalue(5, 1)``` change the value at index 1 to 5.
+* ```$array1[-1] = 500``` changes the last value from 50 to 500.
+* ```Clear-Variable -Name myName```  clears the myName variable from d variable list.
+* ```New-Variable -Name val1 -Value "This is value 1"``` creates a new variable (lengthy method)
+* ```[System.Collecction.ArrayList]$newArray = 1..5```  defining a standard non-fixed array.
+```ps
+$newArray.Remove(4) -> removes 4 from the newArray.
+$newArray.RemoveAt(1) -> removes value at index 1.
+$newArray.Add(10) -> adds 10 to the newArray.
+```
 
 
+### Commands Piping
+A way of connecting commands in powershell is called Piping.
+We use | symbol to pipe two or more cmds,
+eg;  ```dir | more```
+Piping provides a way for one cmd to pipe its output to another cmd as input,
+eg;
+```ps
+Get-Service | export-csv c:\temp\services.csv
+Get-service -Name "Windows update" | stop-service
+```
 
-====================================================================================================
-=====================================Commands Piping===============================================
---> A way of connecting commands in powershell is called Piping.
---> We use | symbol to pipe two or more cmds,
-	eg; dir | more
---> Piping provides a way for one cmd to pipe its output to another cmd as input,
-	eg; Get-Service | export-csv c:\temp\services.csv
-	    Get-service -Name "Windows update" | stop-service
-
-=========================How Piping Works?====================================================
---> Powershell accepts inputs through "parameters".
---> Powershell uses a technique called "pipeline parameter binding"
---> Lets consider this example;
-	-> Get-content c:\temp\services.txt | get-service
-	-> get-content reads the content of textfile, which has service named listed.
-	-> We are piping that information as input to get-service cmdlet.
-	-> Now one of the parameter from get-service cmdlet should pickup this information as input and process it.
+### How Piping Works?
+* Powershell accepts inputs through "parameters".
+* Powershell uses a technique called "pipeline parameter binding"
+* Lets consider this example;
+```ps
+Get-content c:\temp\services.txt | get-service
+```
+ Get-content reads the content of textfile, which has service named listed.
+* We are piping that information as input to get-service cmdlet.
+* Now one of the parameter from get-service cmdlet should pickup this information as input and process it.
 
 
-====Methods used by Powershell to understand Output produced by one cmd to the 2nd cmd====
-1) Input 'ByValue' method:
+### Methods used by Powershell to understand Output produced by one cmd to the 2nd cmd:
+1. Input 'ByValue' method:
 	both data type of each output must be same. pipe the output to Get-Member cmdlet to get data type.
-		example: Get-Content C:\testing\test.txt | Get-Member
+		example: ```Get-Content C:\testing\test.txt | Get-Member```
 			or
-			(Get-Content C:\testing\test.txt | Get-Member).gettype()
+			```(Get-Content C:\testing\test.txt | Get-Member).gettype()```
 
-2) Input 'ByPropertyName' method:
-	Get-Process explorer | select -Property * --> this gets the process 	properties.
-	Get-Service WSearch | Get-Member -MemberType Property,AliasProperty --> this exclude methods 		and events from  the MemberType column.
+2. Input 'ByPropertyName' method:
+	```Get-Process explorer | select -Property *```  this gets the process 	properties.
+	```Get-Service WSearch | Get-Member -MemberType Property,AliasProperty```  this exclude methods and events from  the MemberType column.
 
-	Generic Piping example:
-		Get-Process | Out-File .\folder\test.txt -->> outputs all processes into				the text.txt file.
+Generic Piping example:
+> ```Get-Process | Out-File .\folder\test.txt```  outputs all processes into the text.txt file.
 
-	Get-Service | Export-Csv .\Test_playGround\222.csv -->> outputs all services as a csv file.
+>	```Get-Service | Export-Csv .\Test_playGround\222.csv```  outputs all services as a csv file.
 
-	Get-Service | ConvertTo-Html > .\222.html --> converts to html, then 	output into the 		.html file.
+>	```Get-Service | ConvertTo-Html > .\222.html```  converts to html, then	output into the .html file.
 
 
-
-=====================================================================================================
-=====================Creating a Script to silently install apps in windows=========================
+#
+### Creating a Script to silently install apps in windows
 --> if multiple apps to install, you can put them in a share folder or any folder then create a .csv file with their fullname and silent install value (search how to install that file silently with powershell). example: in test folder, we have a pkgs.csv file, inside the csv file (ChromeStandaloneSetup64.exe,/silent /install).
 
 --> you can then import to  powershell with (specify a delimiter -> "," and header for the csv file 		-> "install","value"):
