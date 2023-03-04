@@ -30,37 +30,43 @@ __PowerShell Core:__ receives updates from microsoft.
 	to download for windows, linux, macos goto the github 'pwsh' page and download.
 	to check version: 
 ```ps 
-$psversiontable.
+$psversiontable
 ```
 > in visual studio code, goto view option, command palette, select enable powershell mode. 
 #
 #
 ### Getting Ip address Information.
-
---> get all network card address info.
+#
 ```ps
 Get-NetIpAddress
 ```
---> get all network interface info (dhcp enabled or not).
+get all network interface info (dhcp enabled or not).
 ```ps
 Get-NetIpInterface
 ```
---> get full ip address info + dns.
+get full ip address info + dns.
 ```ps
 Get-NetIpConfiguration
 ```
---> get summarized list of all network adapters.
+get summarized list of all network adapters.
 ```ps
 Get-NetAdapter
 ```
 
-Set New Ip Address:
-New-NetIPAddress -InterfaceIndex [index number] -IPAddress [ip address] -DefaultGateway [gateway ip] -PrefixLength [subnet mask] --> set a new ip address and gateway.
+### Set New Ip Address:
+```ps
+New-NetIPAddress -InterfaceIndex [index number] -IPAddress [ip address] -DefaultGateway [gateway ip] -PrefixLength [subnet mask]
+```
 
-Set Dns Address:
-Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "8.8.8.8, 8.8.4.4" --> set a dns ip address.
+### Set Dns Address:
+```ps
+Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "8.8.8.8, 8.8.4.4"
+```
 
-Remove Ip address, Gateway and DNS:
+### Remove Ip address, Gateway and DNS:
+
+```ps
 Remove-NetIPAddress -IPAddress [ip address]
 Remove-NetRoute -NextHop [default gateway ip address]
 Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "dns address"
+```
