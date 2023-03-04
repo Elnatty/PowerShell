@@ -116,3 +116,28 @@ you can further streamline your search query;
 Get-Command *service* -ParameterName ComputerName
 Get-Command -ParameterName NextHop
 ```
+#
+### How to use the Get-Help cmdlet
+__parameters for the Get-Help cmmdlet;__
+* -ShowWindow	//display help in a window format, allowing for selecting views.
+* -Examples	// gives some examples about the cmdlet.
+* -Detailed	// detailed usecase.
+* -Full	// to get full usecase/exapmles.
+*	-Online // to get online help.
+
+To view an example or usecase of a cmdlet;  
+```ps
+Get-Help [-Examples syntax] [any cmdlet u want to know how to use]
+```
+example;
+```ps
+Get-Help -Examples Get-ComputerInfo
+```
+-property is a parameter of the cmd.
+```ps
+Get-ComputerInfo -Property "*version"
+```
+search for all services with -DisplayName parameter with space before server keyword and displays them.
+```ps
+Get-Service -DisplayName "* server*"
+```
