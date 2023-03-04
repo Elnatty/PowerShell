@@ -405,225 +405,238 @@ Generic Piping example:
 
 >	```Get-Service | ConvertTo-Html > .\222.html```  converts to html, then	output into the .html file.
 
+#
+### PowerShell Objects
+view all parameter of a cmdlet.
+
+```(Get-Command Get-Service).Parameters.Values | select name``` outputs all parameters for the Get-Service cmdlet.
+	or
+ ```Help Get-NetIPAddress -Parameter * | select name```
+  or,
+you can view by -> ```Get-Service``` and press 'tab key' to iterate through them.
+	or,
+	you can view in a formatted list view by  ```(Get-Command Get-Service).Parameters.Values | select name```
+
+```Get-Service  WSearch | select *``` outputs all the parameters for 'wsearch'
+	or,
+	```Get-Service  WSearch | select -Property *```
+	or,
+	```Get-Service | Select-Object DisplayName```
+
+```Get-Service | select -Property *``` outputs full properties of an object.
 
 #
-### Creating a Script to silently install apps in windows
---> if multiple apps to install, you can put them in a share folder or any folder then create a .csv file with their fullname and silent install value (search how to install that file silently with powershell). example: in test folder, we have a pkgs.csv file, inside the csv file (ChromeStandaloneSetup64.exe,/silent /install).
-
---> you can then import to  powershell with (specify a delimiter -> "," and header for the csv file 		-> "install","value"):
-	Import-Csv \\path_to_file\\ -Delimiter "," -Header "install","value" --> outputs the apps in 		a nicely formatted view in powershell.
-
---> 
-to be continued...
-
-
-
-====================================================================================================
-===========================================PowerShell Objects=======================================
---> view all parameter of a cmdlet.
-
---> (Get-Command Get-Service).Parameters.Values | select name -> outputs all parameters for the Get-Service cmdlet.
-	or
-	Help Get-NetIPAddress -Parameter * | select name
-	or,
-	you can view by -> Get-Service and press 'tab key' to iterate through them.
-	or,
-	you can view in a formatted list view by -> (Get-Command Get-Service).Parameters.Values | select name
-
---> Get-Service  WSearch | select * -> outputs all the parameters for 'wsearch'
-	or,
-	Get-Service  WSearch | select -Property *
-	or,
-	Get-Service | Select-Object DisplayName
-
---> Get-Service | select -Property * -> outputs full properties of an object.
-
-
-============================================Real life usecase=======================================
-====================================================================================================
-How to find suffs you dont know exact name of in powershell......................
+### Real life usecase
+How to find stuffs you dont know exact name of in powershell:
 use the powershell ise environment:
 example;
 
---> accessing properties of an object using variable declaration:
+accessing properties of an object using variable declaration:
+```ps
 $service = Get-Service WSearch
-$service.Name -> outputs Windows Search
+$service.Name  outputs Windows Search
 or,
 Get-Service WSearch | Select-Object -Property Name
+```
 
+You can stop a service many ways: example;
+```Stop-Service -Name $service```
 
--> You can stop a service many waye: example;
-Stop-Service -Name $service
-
--> you can also get object by using the 'Where-Object' cmdlet
+you can also get object by using the ```Where-Object``` cmdlet
 example;
--> 'Where-Object' based on "matching" keywords.
-Get-Service | Where-Object -Property Name -Match 'anydesk' -> outputs the 'anydest' service
+'Where-Object' based on "matching" keywords.
+```ps
+Get-Service | Where-Object -Property Name -Match 'anydesk' outputs the 'anydest' service
 or,
 Get-Service | Where-Object {$_.DisplayName -match 'backup'}
 Get-Process | Where-Object {$_.Name -match 'search'}
+```
 
--> 'Where-Object' based on "exact" keywords.
-Get-Service | Where-Object -Property Name -EQ 'wsearch' -> use this if you know the actual name.
+'Where-Object' based on "exact" keywords.
+```Get-Service | Where-Object -Property Name -EQ 'wsearch'``` use this if you know the actual name.
 or,
-Get-Process | Where-Object {$_.Name -eq 'searchapp'}
+```Get-Process | Where-Object {$_.Name -eq 'searchapp'}```
 
-
-
-=======================================User Defined Objects=========================================
-You can also define/create your own user defined objects............................................
+***
+### User Defined Objects=========================================
+You can also define/create your own user defined objects.
 example:
-$obj = New-Object -TypeName psobject -> to create
-$obj | Add-Member -Type NoteProperty -Name Name -Value Nathan -> to define its objects
-$obj | Add-Member -Type NoteProperty -Name Age -Value 24 -> another object.
-$obj.name -> to access the name method.
+```ps
+$obj = New-Object -TypeName psobject // to create
+$obj | Add-Member -Type NoteProperty -Name Name -Value Nathan // to define its objects
+$obj | Add-Member -Type NoteProperty -Name Age -Value 24 // another object.
+$obj.name // to access the name method.
+```
 
-
-
-===========================================PowerShell Operators=====================================
-====================================================================================================
---> The term operator refers to one or more characters in a command or expression that powershell interprets in a specific way.
---> 	1) Arithmetic (+, -, *, /, modulus %)
-	2) Logical: -and, -or, -not or !, xor - (only one should be true)
-		$number
-		($number -eq 100) -or ($number -ne 20) -> outputs True. 
-		Equality -> -eq, -ne, -lt, -ge, -le. example: 100 -eq 19 -> outputs false.
-		Match -> -like, -notlike, -match, -notmatch. example: 'anonymous' -match 'anon' -> outputs true.
-	3) Comparison: -contains, -notcontains example:
-		$a = 'one','two','three','four'
-		$a -contains 'one' -> outputs True.
+***
+### PowerShell Operators
+The term operator refers to one or more characters in a command or expression that powershell interprets in a specific way.
+1. Arithmetic (+, -, *, /, modulus %).
+2. Logical: -and, -or, -not or !, xor - (only one should be true)
+```$number ($number -eq 100) -or ($number -ne 20)``` //outputs True. 
+		Equality  -eq, -ne, -lt, -ge, -le. example: 100 -eq 19 //outputs false.
+		Match // -like, -notlike, -match, -notmatch. example: 'anonymous' -match 'anon' -> outputs true.
+3. Comparison: -contains, -notcontains example:
+```ps
+$a = 'one','two','three','four'
+$a -contains 'one' -> outputs True.
+```
 -replace example:
-	"My name is Nathan" -replace 'Nathan',"Hannah Alabi"
-	"Test value" -replace "Te","Be"
-	1..5 | foreach {New-item -Name $("file" + $_ + ".txt")} -> creates 5 .txt files (file1.txt-file5.txt).
-	Get-children *.txt | foreach {Rename-Item $_.Name -NewName $($_.name -replace '.txt','.log')} -> rename all files to (file1.log - file5.log).
+```ps
+"My name is Nathan" -replace 'Nathan',"Hannah Alabi"
+```
+```ps
+"Test value" -replace "Te","Be"
+```
+```ps
+1..5 | foreach {New-item -Name $("file" + $_ + ".txt")} // creates 5 .txt files (file1.txt-file5.txt)
+```
+```ps
+Get-children *.txt | foreach {Rename-Item $_.Name -NewName $($_.name -replace '.txt','.log')} -> rename all files to (file1.log - file5.log).
+```
 
-	4) SPlit and Join: -split, -join example;
-		-split -> convert string to array. $name = 'My name is not Natty'
-			$name.split(' ') -> returns an array.
-			$name -join " " -> returns a string
-	5) Type Operators: -is, -isnot example;
+4. SPlit and Join: -split, -join example;
+		-split // convert string to array. $name = 'My name is not Natty'
+```ps
+$name.split(' ') -> returns an array.
+$name -join " " -> returns a string
+```
+5. Type Operators: -is, -isnot example;
 		$a = 2
-		$a -is [int] -> outputs True
-	6) Redirection: > -> write an output to a file
-			>> -> append an output to a file
-		Get-Children > .\path 
-	7) Assignment / unary: =,+=,-=,*=,/=,++,--,%=
-		$num = 100
-		$num++ -> outputs 101
+		```$a -is [int] // outputs True```
+6. Redirection: > -> write an output to a file
+			>> // append an output to a file
+		```Get-Children > .\path ```
+7. Assignment / unary: =,+=,-=,*=,/=,++,--,%=
+```ps
+$num = 100
+$num++ -> outputs 101
+```
 
---> example: '+'
+example: '+'
 	powershell uses this for addition of integers or to join strings.
-	$a = 1; $b = 2; $c = $a + $b -> outputs 3
-	"Nathan" + "Alabi" -> Nathan Alabi
+```ps
+$a = 1; $b = 2; $c = $a + $b -> outputs 3
+"Nathan" + "Alabi" // Nathan Alabi
+````
+8. Tenary Operators:
+```2 -eq 3 ? "True" : "False"```
 
-	8) Tenary Operators:
-		2 -eq 3 ? "True" : "False"
-
-
-===========================================Loops in PowerShell=====================================
-====================================================================================================
+***
+### Loops in PowerShell
 foreach, for, while,do-while, do-until loops.
 
---> foreach loop:
+foreach loop:
+```ps
 $number = 1,2,3,4,5
 foreach($num in $number) {
     $n = $num + 10
     Write-Host $n
 }
+```
 
---> for loop:
+for loop:
+```ps
 $numbers = 10,20,30,40,50
 for ($i=0; $i -le $numbers.Count; $i++){
     $numbers[$i] * 2
 }
-
+```
+```ps
 $count = 0
 for ($i=0; $i -lt 8; $i++){
     "$count Apple"; $count++
 }
-
+```
+```ps
 $count = 0
 for (($i=0),($m=10); $i -lt 10 -and $m -ge 10; $i++, $m++){
     "$i is $m"
 }
+```
 
+#
+### Invoke Command in PowerShell
+Is used to execute script on a local or remote computer. example;
+```ps
+Invoke-Command -ScriptBlock {$str = 'This is a local String'; "String value: $str"}
+```
 
-
-===============================================================================================================================Invoke Command in PowerShell============================================
---> Is used to execute script on a local or remote computer. example;
-	Invoke-Command -ScriptBlock {$str = 'This is a local String'; "String value: $str"}
-
-
-
-====================================================================================================================================While Loops========================================================
--->
+### While Loops
+```ps
 $list = 15..18
 $i = 0
 while ($i -le $list.count){
     $list[$i]; $i++
-} 
+}
+```
 
-============================================================================================================================================Error Handling in PS========================================
+### Error Handling in PS========================================
 
---> $error -> the $error variable holds all errors encountered in powershell for that current session. Which is an array.
---> $error[0].gettype() -> shows the error type for the 1st error (using indexing).
---> $error.exception -> shows the description of each all errors in the array.
---> $error[0].Exception.GetType().name or .fullname -> gives the name of the 1st error in d array.
+```$error``` // the $error variable holds all errors encountered in powershell for that current session. Which is an array.
+```$error[0].gettype()``` // shows the error type for the 1st error (using indexing). ```$error.exception``` // shows the description of each all errors in the array.
+```$error[0].Exception.GetType().name or .fullname``` // gives the name of the 1st error in d array.
 example:
-	Test-Connection AZTECMFB -> throws an error
-	$error[0].Exception.GetType().fullname -> fetches the error fullname ie; System.Net.NetworkInformation.PingException
-	or
-	$error[0].Exception.GetType().name -> fetches the error name ie; PingException.
---> $error.Clear() -> clears all errors for current powershell session.
-
-
-===================================reallife usecase of try and catch================================
---> exapmle 1;
+```ps
+Test-Connection AZTECMFB // throws an error
+$error[0].Exception.GetType().fullname // fetches the error fullname ie; System.Net.NetworkInformation.PingException
+or
+$error[0].Exception.GetType().name // fetches the error name ie; PingException.
+$error.Clear() // clears all errors for current powershell session.
+```
+***
+### Reallife usecase of try and catch
+exapmle 1;
+```ps
 Try {
 	ls -Name gg -ErrorAction Stop
 }
 catch{
 	Write-Host "`nError Message:" $_.exception.message
-} -> outputs: Error Message: Cannot find path 'C:\testing\gg' because it does not exist.
-
---> example 2;
+} // outputs: Error Message: Cannot find path 'C:\testing\gg' because it does not exist.
+```
+example 2;
+```ps
 try {
     Test-Connection AZTECMFB -ErrorAction Stop
 } catch {
     Write-Host "`nError Message:" $_.exception.message
 }
+```
+
+***
+### PowerShell Remoting
+Terminologies & Components of PS Remoting:
+* Web Services for mgmt (WS-MAN) -> HTTP-5985 and 5986
+* Firewall & Security
+* Windows Remote Mgmt (WinRM)
+* Authentication
+* Endpoint
+* Listener
 
 
+### Preparing Client PC's for PowerShell Remoting
+Hostname // get name of client pc workstation.
+1. ```Enable-PSRemoting``` enable powershell remoting on PC's
 
-=============================================================================================================================================PowerShell Remoting========================================
---> Terminologies & Components of PS Remoting:
-	-> Web Services for mgmt (WS-MAN) -> HTTP-5985 and 5986
-	-> Firewall & Security
-	-> Windows Remote Mgmt (WinRM)
-	-> Authentication
-	-> Endpoint
-	-> Listener
+2. ```Get-PSSessionConfiguration | select name``` // checking enabled endpoints, or verifying ps remoting is enabled
+
+```Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name "LocalAccountTokenFilterPolicy"```  check if the registry exists.
+
+3. ```new-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name "LocalAccountTokenFilterPolicy" -value '00000001' -propertytype Dword -Force``` // adding the key into the registry (do this on client PC).
+
+4. ```set-Item WSMan:\localhost\Client\TrustedHosts -Value "ip_add_of_client_pc" -Force -Concatenate``` // add the client PC to the domain controller trusted host lists.
+
+5. ```Get-Item WSMan:\localhost\Client\TrustedHosts``` // checking if new client has been added to DC trusted host lists.
 
 
-=================================Preparing Client PC's for PowerShell Remoting======================
-====================================================================================================
---> Hostname -> get name of client pc workstation.
-1)--> Enable-PSRemoting -> enable powershell remoting on PC's
-
-2)--> Get-PSSessionConfiguration | select name -> checking enabled endpoints, or verifying ps remoting is enabled
-
--->  Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name "LocalAccountTokenFilterPolicy" -> check if the registry exists.
-
-3)--> new-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name "LocalAccountTokenFilterPolicy" -value '00000001' -propertytype Dword -Force -> adding the key into the registry (do this on client PC).
-
-4)--> set-Item WSMan:\localhost\Client\TrustedHosts -Value "ip_add_of_client_pc" -Force -Concatenate -> add the client PC to the domain controller trusted host lists.
-
-5)--> Get-Item WSMan:\localhost\Client\TrustedHosts -> checking if new client has been added to DC trusted host lists.
-
-====================================================================================================
-=========================================One-One PS Remoting========================================
---> helpful when working with single remote machine.
---> commands;
-	Enter-PsSession eg; Enter-PSSession -ComputerName "ip_add_of_client"
-	Exit-PsSession
+***
+###One-One PS Remoting
+* helpful when working with single remote machine.
+* commands;
+```ps
+Enter-PsSession eg; Enter-PSSession -ComputerName "ip_add_of_client"
+```
+```ps
+Exit-PsSession
+```
