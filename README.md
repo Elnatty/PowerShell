@@ -189,6 +189,112 @@ Get-EventLog -LogName System or Get-EventLog System
     ```
 	* They don't accept any value as input
 		eg; 
-    ```ps
-    Get-Service [-DependentServices]
-    ```
+      ```ps
+      Get-Service [-DependentServices]
+      ```
+#
+### Getting List of a CmdLet Parameters
+To get the entire list of a cmdlet parameters.
+```ps
+(Get-Command Get-NetIPAddress).Parameters.Values | select name
+```
+
+### Alias
+When using some cmdlets frequently you can call them by their shortname or alias instead of using their filenames, example; 
+```ps
+ps instead of Get-Process
+```
+to get the alias for a particular cmdlet;
+```ps
+Get-Alias -Definition Get-Process
+```
+to get full name using the alias name;
+```ps
+Get-Alias -Name ps
+```
+### PSDrives
+When you run a cmdlet you ultimately manipulate some data in the form of configuration on your computer, right?
+All 'Get' cmdlets will retrieve data and all 'Set' cmdlets will change/modify configuration (data).
+Powershell comes with different drives by default like our regular data drives C:\, D:\ etc. and additionally you can see Registry, Certificate Store and Environmental Variables etc. also as drives.
+
+```Get-PSDrive``` is the cmdlet to explore them.
+
+Some of these PSDrives will not be visible in Explorer.
+You can access registry as a drive (file system).
+Drive letters for these drives can be more than one character for ex: HKCU (HKEY_CURRENT_USER), HKLM (HKEY_LOCAL_MACHINE)
+#
+### Errors
+An error occurs when something isn't right with the cmdlet or script execution.
+* Errors looks scary, but they are not really.
+* errors tells us where exactly the script went wrong with line and character numbers.
+* errors are different types in powershell, technically called as Exceptions.
+
+
+### PowerShell Variables Intro
+* A variable name starts with a ```$``` (dollar sign)
+* Should not include/use name from pre-defined system variables like;
+	```$true, $false, $null, $error```
+* To assign a value to variable = will be used
+	example;
+```ps
+$hostname = "Natty"
+$hostname --> to print "Natty" to console.
+```
+
+### TYPES of variable in POWERSHELL
+1. __System Variables:__ Pre-defined variables in powershell.
+	we can use the; Get-Variable or ls variable:* --> to view these variables.
+
+2. __User-defined Varaibles:__ defined by a user and can be overwritten.
+	example; ```$myName = "Natty", $age = 30```
+3. __Environmental Variables:__ Stores info about the OS environment.
+	example; ```cd env:\``` then;
+			```ls``` to view the environment
+		or view them individually;
+		```ls temp, ls home, ls os, ls windir```
+
+
+to exclude those items from the variable list
+```ps
+Get-Variable -Exclude profile, home
+```
+you can call any variable listed in 
+```ps
+Get-Variable $error, $home, $profile
+```
+
+to get the data type you can access the data type methods using the tab key
+```ps
+$myName | Get-Member or $age.GetType()
+```
+#
+
+### Variable Scope
+1. __Local:__ local to the script, mostly user-defined variables.
+	example: use the ```Invoke-Command``` to declare a local variable.
+```ps	
+Invoke-Command -ScriptBlock {$str = 'This is a local String'; "String value: $str"}
+```
+2. __Global:__ available to all cmdlets, scripts and functions
+	you can make a local variable in a script file globally accessible outside that script by; ```$global:myName = "DKing"```
+	when the script file is executed, the ```myName``` variable becomes globally accessible in that powershell terminal/session.
+#
+### Changing variable scope using Scope Modifier
+```ps
+$global:myName = "DKing"
+Invoke-Command -ScriptBlock {$global:str = 'This is a local String'; "String value: $str"}
+```
+#
+### How to get input from users in PowerShell
+By using 'Read-Host' cmdlet example; write script in ise:
+> as strings:
+* ```$f_name = Read-Host 'enter first name'```
+* ```$l_name = Read-Host 'enter last name'```
+* ```$sp = ' '```
+* ```$result = $f_name + $sp + $l_name```
+* ```$result```
+> as integers:
+* ```[int] $f_num = Read-Host 'enter first number'```
+* ```[int] $l_num = Read-Host 'enter last number'```
+* ```$result = $f_num + $l_num```
+* ```$result```
