@@ -81,20 +81,38 @@ Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "dns 
 * get total number of cmdlets installed in pc: ```(Get-Command).count``` or ```Get-Command -parameterName "*computername*" | measure-object```
 #
 ### How to Search in PowerShell
-__searching for specific items:__ the `*` before and after 'service' means that there might be words with `*` before and/or after d term 'service', so fetch all.
+__searching for specific items:__ the `*` before and after `service` means that there might be words with `*` before and/or after d term `service`, so fetch all.
 ```ps
 Get-Command *service*
 ```
-	or..
-	(Get-Command *servic*).count --> to get total count of cmds available.
-	or further thrim down ur search queries..
-	(Get-Command *-service*).count --> cmds with -service in them.
---> searching using module names like; Microsoft Powershell Mgmt or Azure Modules; Get-Command -Module [module name] or if you want to get a list of cmdlets with that particulare module name.
- 	Get-Command -Module Microsoft.PowerShell.Management
+to get total count of cmds available:
+```ps
+(Get-Command *servic*).count
+```
 
---> searching using parameterName or if you want to get list of all cmdlets that has a particular parameterName example; Get-Command [-ParameterName syntax] [the parameter name]
-	Get-Command -ParameterName ComputerName
+you can further trim down ur search queries: cmds with -service in them
+```ps
+(Get-Command *-service*).count
+```
 
---> you can further streamline your search query;
-	Get-Command *service* -ParameterName ComputerName
-	Get-Command -ParameterName NextHop
+searching using module names like; Microsoft Powershell Mgmt or Azure Modules; 
+```ps
+Get-Command -Module [module name]
+```
+
+or if you want to get a list of cmdlets with that particular module name.
+```ps
+Get-Command -Module Microsoft.PowerShell.Management
+```
+
+searching using parameterName or if you want to get list of all cmdlets that has a particular parameterName example; 
+```ps
+Get-Command [-ParameterName syntax] [the parameter name]
+Get-Command -ParameterName ComputerName
+```
+
+you can further streamline your search query;
+```ps
+Get-Command *service* -ParameterName ComputerName
+Get-Command -ParameterName NextHop
+```
