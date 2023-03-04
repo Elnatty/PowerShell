@@ -36,11 +36,22 @@ $psversiontable.
 #
 #
 ### Getting Ip address Information.
+
+--> get all network card address info.
 ```ps
-Get-NetIpAddress --> get all network card address info.
-Get-NetIpInterface --> get all network interface info (dhcp enabled or not).
-Get-NetIpConfiguration --> get full ip address info + dns.
-Get-NetAdapter --> get summarized list of all network adapters.
+Get-NetIpAddress
+```
+--> get all network interface info (dhcp enabled or not).
+```ps
+Get-NetIpInterface
+```
+--> get full ip address info + dns.
+```ps
+Get-NetIpConfiguration
+```
+--> get summarized list of all network adapters.
+```ps
+Get-NetAdapter
 ```
 
 Set New Ip Address:
