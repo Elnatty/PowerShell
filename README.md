@@ -2,9 +2,9 @@
 #### 7:13pm 23/12/2022
 ### intro to powershell scripting
 
-#### --> powershell commands.
-#### -> comments/descriptions
-#### --> ping or Test-Connection
+##### --> powershell commands.
+##### -> comments/descriptions
+##### --> ping or Test-Connection
 ``` ps
 ping bbc.com
 Test-connection bbc.com
