@@ -631,7 +631,7 @@ Hostname // get name of client pc workstation.
 
 
 ***
-###One-One PS Remoting
+### One-One PS Remoting
 * helpful when working with single remote machine.
 * commands;
 ```ps
