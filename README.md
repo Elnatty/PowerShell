@@ -74,9 +74,7 @@ Remove-NetRoute -NextHop [default gateway ip address]
 Set-DnsClientServerAddress -InterfaceIndex [index number] -ServerAddresses "dns address"
 ```
 
-#
-__25/01/2023 7:16pm__
-#
+> __25/01/2023 7:16pm__
 * Update powershell to latest: ```Get-Host```
 * Update helper cmdlets: ```update-help```
 * gets all the cmds in powershell: ```get-help get-command```
