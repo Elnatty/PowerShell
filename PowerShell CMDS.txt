@@ -1,7 +1,7 @@
 7:13pm 23/12/2022
 Note: 
-	--> powershell cmds.
-	-> comments/descriptions
+--> powershell cmds.
+-> comments/descriptions
 --> ping or Test-Connection
 	example: ping bbc.com
 		 Test-connection bbc.com
