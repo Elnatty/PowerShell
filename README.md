@@ -2,24 +2,22 @@
 #### 7:13pm 23/12/2022
 ### intro to powershell scripting
 
-##### --> powershell commands.
-##### -> comments/descriptions
-##### --> ping or Test-Connection
+##### ping or Test-Connection
 ``` ps
 ping bbc.com
 Test-connection bbc.com
 ```
 
 ## Basic Operations in Cmd/PowerShell:
-#### copy -> copy file
-#### cd -> change dir
-#### move -> move file
-#### ren -> rename file/folder
-#### mkdir -> create folder
-#### rmdir -> delete folder
-#### del -> delete file
-#### type -> just like 'cat' in linux.
-#### dir > test.txt --> outputs the entire directory to the test.txt file.
+  * copy -> copy file
+  * cd -> change dir
+  * move -> move file
+  * ren -> rename file/folder
+  * mkdir -> create folder
+  * rmdir -> delete folder
+  * del -> delete file
+  * type -> just like 'cat' in linux.
+  * dir > test.txt --> outputs the entire directory to the test.txt file.
 #
 #### New-Item -> create a new file. example;
 ``` ps
